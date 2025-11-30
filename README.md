@@ -92,7 +92,7 @@ erDiagram
 ### **Orchestration (Airflow)**
 *The automated DAG handling ETL, ML Training, and dbt Transformations.*
 
-![Airflow DAG](assets/airflow_graph.png)
+![Airflow DAG](assets/airflow_grid.png)
 
 ---
 
