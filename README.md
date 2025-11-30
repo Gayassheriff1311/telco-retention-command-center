@@ -49,6 +49,7 @@ graph LR
 ## 🗄️ ** 3. Data Model (3NF Schema)**
 The database is normalized to Third Normal Form (3NF) to ensure integrity, then denormalized via dbt for analytics.
 
+```mermaid
 erDiagram
     CUSTOMERS ||--|| SERVICES : "subscribes_to (1:1)"
     CUSTOMERS ||--|| BILLING : "billed_as (1:1)"
@@ -79,6 +80,7 @@ erDiagram
         string risk_level
         int cluster_id "AI Tribe"
     }
+```
 
 ---
 
