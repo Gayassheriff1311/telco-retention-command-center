@@ -1,0 +1,12 @@
+telco_churn:
+  target: dev
+  outputs:
+    dev:
+      type: postgres
+      threads: 1
+      host: "{{ env_var('DBT_HOST', 'postgres-dw') }}"
+      port: 5432
+      user: "{{ env_var('DBT_USER', 'admin') }}"
+      pass: "{{ env_var('DBT_PASSWORD', 'password123') }}"
+      dbname: "telco_churn"
+      schema: "public"

@@ -1,0 +1,24 @@
+version: 2
+
+sources:
+  - name: telco_db
+    # FIX: Explicitly map this source to the 'public' schema
+    schema: public
+    description: "Raw data loaded from Airflow"
+    tables:
+      - name: customers
+        description: "Demographics data"
+        columns:
+          - name: customer_id
+            tests:
+              - unique
+              - not_null
+
+      - name: services
+        description: "Services subscribed"
+      
+      - name: billing
+        description: "Charges and contract info"
+      
+      - name: predictions
+        description: "ML Model outputs"

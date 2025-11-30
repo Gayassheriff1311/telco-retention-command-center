@@ -1,0 +1,115 @@
+version: '3.8'
+
+x-airflow-common:
+  &airflow-common
+  build: .
+  env_file:
+    - .env
+  environment:
+    &airflow-common-env
+    AIRFLOW__CORE__EXECUTOR: LocalExecutor
+    AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres-airflow/airflow
+    AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
+    AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
+    # This connects Airflow to YOUR Telco Data Warehouse
+    AIRFLOW_CONN_TELCO_DB: postgres://admin:password123@postgres-dw:5432/telco_churn
+  volumes:
+    - ./dags:/opt/airflow/dags
+    - ./logs:/opt/airflow/logs
+    - ./plugins:/opt/airflow/plugins
+    - ./include:/opt/airflow/include
+    - ./data:/opt/airflow/data
+    - ./dbt_project:/opt/airflow/dbt_project  
+  depends_on:
+    &airflow-common-depends-on
+    postgres-airflow:
+      condition: service_healthy
+
+services:
+  # 1. Airflow Metadata Database (System use only)
+  postgres-airflow:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+      POSTGRES_DB: airflow
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "airflow"]
+      interval: 5s
+      retries: 5
+    volumes:
+      - postgres_airflow_data:/var/lib/postgresql/data
+
+  # 2. YOUR Telco Data Warehouse (Business Data)
+  postgres-dw:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password123
+      POSTGRES_DB: telco_churn
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_dw_data:/var/lib/postgresql/data
+
+  # 3. Airflow Initialization 
+  airflow-init:
+    <<: *airflow-common
+    command: version
+    environment:
+      <<: *airflow-common-env
+      _AIRFLOW_DB_UPGRADE: 'true'
+      _AIRFLOW_WWW_USER_CREATE: 'true'
+      _AIRFLOW_WWW_USER_USERNAME: airflow
+      _AIRFLOW_WWW_USER_PASSWORD: airflow
+
+  # 4. Airflow Webserver 
+  airflow-webserver:
+    <<: *airflow-common
+    command: webserver
+    ports:
+      - "8080:8080"
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:8080/health"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+    depends_on:
+      <<: *airflow-common-depends-on
+      airflow-init:
+        condition: service_completed_successfully
+
+  # 5. Airflow Scheduler 
+  airflow-scheduler:
+    <<: *airflow-common
+    command: scheduler
+    depends_on:
+      <<: *airflow-common-depends-on
+      airflow-init:
+        condition: service_completed_successfully
+
+  # 6. Streamlit Dashboard
+  streamlit-app:
+    build: .
+    container_name: telco_dashboard
+    ports:
+      - "8501:8501"
+    depends_on:
+      postgres-dw:
+        condition: service_started
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=password123
+      - POSTGRES_DB=telco_churn
+      - POSTGRES_HOST=postgres-dw
+      - POSTGRES_PORT=5432
+      - PYTHONPATH=/app
+    working_dir: /app
+    volumes:
+      - ./src:/app/src
+    # FORCE the command to run as a single block
+    entrypoint: ["/bin/bash", "-c", "streamlit run src/app/app.py --server.address=0.0.0.0"]
+
+volumes:
+  postgres_airflow_data:
+  postgres_dw_data:
