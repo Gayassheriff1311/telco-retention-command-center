@@ -31,6 +31,40 @@ By transitioning from reactive metrics to a probabilistic **Machine Learning mod
 ## 2. Technical Methodology
 To ensure reliability, scalability, and reproducibility, the analysis was conducted using a containerized microservices architecture:
 
+### **Automated Data Lifecycle**
+The following diagram illustrates how data flows from the raw source to the final dashboard insight:
+
+```mermaid
+sequenceDiagram
+    participant User as Data Source (CSV)
+    participant Airflow as Airflow Orchestrator
+    participant DB as Postgres (Warehouse)
+    participant ML as ML Engine (XGBoost)
+    participant dbt as dbt (Transformer)
+    participant App as Dashboard (Streamlit)
+
+    Note over User, App: 1. Ingestion Phase
+    User->>Airflow: New Data Added
+    Airflow->>DB: Initialize Schema (Wipe & Recreate)
+    Airflow->>DB: Load Raw Data (Bronze Layer)
+
+    Note over Airflow, ML: 2. Intelligence Phase
+    Airflow->>ML: Trigger Training Task
+    ML->>DB: Fetch Training Data
+    ML->>ML: Retrain Model & Cluster Users
+    ML->>DB: Save Predictions & Risk Scores
+
+    Note over Airflow, dbt: 3. Transformation Phase
+    Airflow->>dbt: Trigger Transformation
+    dbt->>DB: Compile SQL Models
+    DB->>DB: Create "Gold" View (Joins + Clean Up)
+    dbt->>Airflow: Tests Passed (Quality Gate)
+
+    Note over DB, App: 4. Consumption Phase
+    App->>DB: Query "Gold" View
+    DB->>App: Return Churn Metrics & Segments
+    App->>User: Display Strategic Insights
+```
 * **Ingestion (Airflow):** Automated pipelines ensure data is ingested and validated daily, replacing manual CSV handling.
 * **Transformation (dbt):** Data integrity is enforced via 3NF normalization and automated quality gates (e.g., uniqueness checks), creating a trusted "Gold Layer" for reporting.
 * **Intelligence (ML):**
