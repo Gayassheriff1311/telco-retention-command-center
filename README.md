@@ -38,11 +38,7 @@ graph LR
     B -.->|Log Metrics| F[System Monitoring]
     end
 
-Service,Technology,Purpose
-Orchestrator,Apache Airflow 2.7,Manages the DAG (Init → ETL → ML → dbt).
-Warehouse,PostgreSQL 15,Stores Raw Data (Bronze) and modeled Views (Gold).
-Transformation,dbt (Data Build Tool),"Manages SQL logic, testing, and data lineage."
-Dashboard,Streamlit,Visualizes High Risk segments and LTV projections.
+ServiceTechnologyPurposeOrchestratorApache Airflow 2.7Manages the DAG (Init $\to$ ETL $\to$ ML $\to$ dbt).WarehousePostgreSQL 15Stores Raw Data (Bronze) and modeled Views (Gold).Transformationdbt (Data Build Tool)Manages SQL logic, testing, and data lineage.DashboardStreamlitVisualizes High Risk segments and LTV projections.
 
 
 ## 🗄️ ** 3. Data Model (3NF Schema)**
