@@ -164,5 +164,11 @@ Once the containers are running (Status: `Up`):
 * **Uniqueness:** dbt tests ensure `customer_id` is unique.
 * **Completeness:** Pipeline validates critical fields (`TotalCharges`) are not null.
 
+---
 
+## ⚡ **8. Data Lifecycle & Latency**
+
+* **Schedule:** The pipeline runs automatically once every 24 hours (`@daily` in Airflow).
+* **Latency:** New data added to the CSV will appear in the dashboard after the next scheduled run (or upon manual trigger).
+* **Strategy:** The system uses a **Full Refresh** pattern—tables are rebuilt daily to ensure 100% consistency with the source file.
 
