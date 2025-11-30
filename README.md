@@ -1,4 +1,4 @@
-# 📡 Telco Retention Command Center
+# Telco Retention Command Center
 
 ![Airflow](https://img.shields.io/badge/Orchestration-Apache%20Airflow-blue?logo=apache-airflow)
 ![dbt](https://img.shields.io/badge/Transformation-dbt%20Core-orange?logo=dbt)
@@ -10,7 +10,7 @@
 
 ---
 
-## 🎯 **1. Project Overview**
+## **1. Project Overview**
 This project upgrades traditional Telco Churn analysis into a **Modern Data Stack**. Instead of manual scripts, it uses a containerized microservices architecture to ingest, clean, model, and visualize data automatically.
 
 ### **Key Capabilities**
@@ -21,7 +21,7 @@ This project upgrades traditional Telco Churn analysis into a **Modern Data Stac
 
 ---
 
-## 🏗️ **2. System Architecture**
+## **2. System Architecture**
 
 The platform follows a decoupled microservices pattern orchestrated by Docker.
 
@@ -46,7 +46,7 @@ graph LR
 | **Transformation** | dbt (Data Build Tool) | Manages SQL logic, testing, and data lineage. |
 | **Dashboard** | Streamlit | Visualizes High Risk segments and LTV projections. |
 
-## 🗄️ ** 3. Data Model (3NF Schema)**
+## **3. Data Model (3NF Schema)**
 The database is normalized to Third Normal Form (3NF) to ensure integrity, then denormalized via dbt for analytics.
 
 ```mermaid
@@ -84,7 +84,7 @@ erDiagram
 
 ---
 
-## 📸 **4. Project Gallery**
+## **4. Project Gallery**
 
 ### **The Command Center (Dashboard)**
 *Real-time intelligence on customer churn risk and revenue exposure.*
@@ -98,7 +98,7 @@ erDiagram
 
 ---
 
-## 🚀 **5. How to Run (Cross-Platform)**
+## **5. How to Run (Cross-Platform)**
 
 This project is fully containerized using Docker, ensuring it runs identically on macOS, Windows, and Linux.
 
@@ -135,7 +135,7 @@ This project is fully containerized using Docker, ensuring it runs identically o
 
 ---
 
-## 🎮 **6. Accessing the Interfaces**
+## **6. Accessing the Interfaces**
 Once the containers are running (Status: `Up`):
 
 1.  **Orchestrator (Airflow):** [http://localhost:8080](http://localhost:8080)
@@ -148,7 +148,7 @@ Once the containers are running (Status: `Up`):
 
 ---
 
-## 🧠 **7. Logic & Models**
+## **7. Logic & Models**
 
 ### **Data Engineering (ETL)**
 * **Extract:** Reads raw CSV data.
