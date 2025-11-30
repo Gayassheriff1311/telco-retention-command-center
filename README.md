@@ -190,7 +190,7 @@ graph LR
 
 ---
 
-## ⚡ **8. Data Lifecycle & Latency**
+## **8. Data Lifecycle & Latency**
 
 * **Schedule:** The pipeline runs automatically once every 24 hours (`@daily` in Airflow).
 * **Latency:** New data added to the CSV will appear in the dashboard after the next scheduled run (or upon manual trigger).
