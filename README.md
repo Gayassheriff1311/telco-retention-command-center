@@ -155,6 +155,30 @@ Once the containers are running (Status: `Up`):
 * **Load:** Normalizes data into 3NF tables (`customers`, `services`, `billing`) in Postgres.
 * **Transform (dbt):** Creates the `analytics_master_view` (Gold Layer) joining all tables and enforcing schemas.
 
+**dbt Transformation Lineage:**
+```mermaid
+graph LR
+    subgraph "Raw Sources (Bronze Layer)"
+        direction TB
+        A[source: customers]
+        B[source: services]
+        C[source: billing]
+        D[source: predictions]
+    end
+
+    subgraph "Transformation (Gold Layer)"
+        E[model: analytics_master_view]
+    end
+
+    %% Relationships
+    A --> E
+    B --> E
+    C --> E
+    D --> E
+
+    style E fill:#00ba88,stroke:#fff,stroke-width:2px,color:#fff
+```
+
 ### **Machine Learning**
 * **Churn Prediction:** XGBoost Classifier trained on 20+ features.
 * **Segmentation:** K-Means Unsupervised Learning clusters customers into 4 behavioral "Tribes."
