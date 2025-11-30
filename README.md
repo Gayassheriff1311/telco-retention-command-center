@@ -36,7 +36,7 @@ graph LR
     
     subgraph Intelligence Layer
     B -.->|Log Metrics| F[System Monitoring]
-    end ```
+    end```
 
 | Service | Technology | Purpose |
 | :--- | :--- | :--- |
